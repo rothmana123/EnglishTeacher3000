@@ -45,8 +45,8 @@ function App() {
           </Routes>
         ) : (
           <div>
-            <h1>Login</h1>
-            <LoginForm LoginEvent={handleLogin} />
+              <h1 style={{ textAlign: 'center', marginTop: '20px' }}>English Teacher 3000</h1>
+              <LoginForm LoginEvent={handleLogin} />
           </div>
         )}
       </div>

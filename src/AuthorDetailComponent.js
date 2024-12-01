@@ -21,6 +21,10 @@ function AuthorDetailComponent() {
   }
 
   return (
+    <div>
+    {/* Header at the top */}
+    <h1 style={{ textAlign: 'center', marginTop: '20px' }}>English Teacher 3000</h1>
+   
     <div style={styles.container}>
       <h2 style={styles.header}>{authorData.author}</h2>
       <div style={styles.detailGroup}>
@@ -65,6 +69,7 @@ function AuthorDetailComponent() {
       <button onClick={() => window.history.back()} style={styles.button}>
         Back to List
       </button>
+    </div>
     </div>
   );
 }

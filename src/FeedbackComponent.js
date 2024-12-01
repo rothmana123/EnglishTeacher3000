@@ -147,51 +147,38 @@ const parseFeedback = (response) => {
   };
 
   try {
-    // Parse response (assuming a structured format)
-    const sections = response.split("\n\n"); // Separate sections by double newlines
+    // Split into sections based on "Criterion" keyword
+    const sections = response.split(/Criterion:/).map((section) => section.trim());
+
+    console.log("Split Sections:", sections); // Debugging split sections
 
     sections.forEach((section) => {
-      if (section.includes("Overall:")) {
-        feedbackParts.overall = section.split("Score:")[0].replace("Overall:", "").trim();
-        feedbackParts.overallAssessmentScore = parseInt(
-          section.split("Score:")[1]?.trim() || "0",
-          10
-        );
-      } else if (section.includes("Lead:")) {
-        feedbackParts.lead = section.split("Score:")[0].replace("Lead:", "").trim();
-        feedbackParts.leadScore = parseInt(
-          section.split("Score:")[1]?.trim() || "0",
-          10
-        );
-      } else if (section.includes("Transitions:")) {
-        feedbackParts.transitions = section.split("Score:")[0].replace("Transitions:", "").trim();
-        feedbackParts.transitionsScore = parseInt(
-          section.split("Score:")[1]?.trim() || "0",
-          10
-        );
-      } else if (section.includes("Ending:")) {
-        feedbackParts.ending = section.split("Score:")[0].replace("Ending:", "").trim();
-        feedbackParts.endingScore = parseInt(
-          section.split("Score:")[1]?.trim() || "0",
-          10
-        );
-      } else if (section.includes("Organization:")) {
-        feedbackParts.organization = section.split("Score:")[0].replace("Organization:", "").trim();
-        feedbackParts.organizationScore = parseInt(
-          section.split("Score:")[1]?.trim() || "0",
-          10
-        );
-      } else if (section.includes("Overall Assessment:")) {
-        feedbackParts.overallAssessment = section
-          .split("Score:")[0]
-          .replace("Overall Assessment:", "")
-          .trim();
-        feedbackParts.overallAssessmentScore = parseInt(
-          section.split("Score:")[1]?.trim() || "0",
-          10
-        );
+      const scoreMatch = section.match(/Score:\s*Level (\d+)/);
+      const feedbackMatch = section.match(/Score:\s*Level \d+\s*(.*)/s);
+
+      if (section.startsWith("Overall")) {
+        feedbackParts.overall = feedbackMatch ? feedbackMatch[1].trim() : "";
+        feedbackParts.leadScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
+      } else if (section.startsWith("Lead")) {
+        feedbackParts.lead = feedbackMatch ? feedbackMatch[1].trim() : "";
+        feedbackParts.leadScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
+      } else if (section.startsWith("Transitions")) {
+        feedbackParts.transitions = feedbackMatch ? feedbackMatch[1].trim() : "";
+        feedbackParts.transitionsScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
+      } else if (section.startsWith("Ending")) {
+        feedbackParts.ending = feedbackMatch ? feedbackMatch[1].trim() : "";
+        feedbackParts.endingScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
+      } else if (section.startsWith("Organization")) {
+        feedbackParts.organization = feedbackMatch ? feedbackMatch[1].trim() : "";
+        feedbackParts.organizationScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
       }
     });
+    // Parse the Overall Assessment separately
+    const overallAssessmentMatch = response.match(/Overall Assessment:\s*(.+)/s);
+    if (overallAssessmentMatch) {
+      feedbackParts.overallAssessment = overallAssessmentMatch[1].trim();
+    }
+  
   } catch (error) {
     console.error("Error parsing feedback:", error);
   }
@@ -203,29 +190,49 @@ const parseFeedback = (response) => {
 // Handle database submission
 const submitToDatabase = async () => {
   try {
+    // Ensure `feedback`, `author`, and `studentID` are properly defined
+    if (!feedback) {
+      throw new Error("Feedback is not defined.");
+    }
+    if (!author) {
+      throw new Error("Author is not defined.");
+    }
+    if (!studentID) {
+      throw new Error("StudentID is not defined.");
+    }
+
     // Parse the feedback before submission
     const parsedFeedback = parseFeedback(feedback);
+
+    // Log the parsed feedback for debugging
+    console.log("Parsed Feedback (from parseFeedback):", parsedFeedback);
+
+    // Validate the parsed feedback
+    if (!parsedFeedback || Object.keys(parsedFeedback).length === 0) {
+      throw new Error("Parsed feedback is empty or undefined.");
+    }
 
     // Construct the submission payload with flat values
     const submissionData = {
       author,
-      text: "",
-      feedback: "", 
+      text: feedback, // Pass the raw feedback text
+      feedback: JSON.stringify(parsedFeedback), // Optional: Stringify for better debugging
       studentID,
-      overall: parsedFeedback.overall,
-      lead: parsedFeedback.lead,
-      transitions: parsedFeedback.transitions,
-      ending: parsedFeedback.ending,
-      organization: parsedFeedback.organization,
-      overallAssessment: parsedFeedback.overallAssessment,
-      leadScore: parsedFeedback.leadScore,
-      transitionsScore: parsedFeedback.transitionsScore,
-      endingScore: parsedFeedback.endingScore,
-      organizationScore: parsedFeedback.organizationScore,
-      overallAssessmentScore: parsedFeedback.overallAssessmentScore,
+      overall: parsedFeedback.overall || "", // Fallback to empty strings if values are undefined
+      lead: parsedFeedback.lead || "",
+      transitions: parsedFeedback.transitions || "",
+      ending: parsedFeedback.ending || "",
+      organization: parsedFeedback.organization || "",
+      overallAssessment: parsedFeedback.overallAssessment || "",
+      leadScore: parsedFeedback.leadScore || 0,
+      transitionsScore: parsedFeedback.transitionsScore || 0,
+      endingScore: parsedFeedback.endingScore || 0,
+      organizationScore: parsedFeedback.organizationScore || 0,
+      overallAssessmentScore: parsedFeedback.overallAssessmentScore || 0,
     };
 
-    console.log("Submitting data to backend:", submissionData);
+    // Log the submission data for debugging
+    console.log("Submission Data to Backend:", submissionData);
 
     // Send the flat object to the backend
     await axios.post(
@@ -251,6 +258,9 @@ const submitToDatabase = async () => {
   };
 
   return (
+    <div>
+          <h1 style={{ textAlign: 'center', marginTop: '20px' }}>English Teacher 3000</h1>
+
     <div style={styles.container}>
       <h2 style={styles.header}>Feedback Form</h2>
 
@@ -318,6 +328,7 @@ const submitToDatabase = async () => {
           Log Out
         </button>
       </div>
+    </div>
     </div>
   );
 };

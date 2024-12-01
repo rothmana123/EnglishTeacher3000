@@ -40,6 +40,9 @@ function AuthorListComponent({ onLogout }) {
   };
 
   return (
+    <div>
+    {/* Header at the top */}
+    <h1 style={{ textAlign: 'center', marginTop: '20px' }}>English Teacher 3000</h1>
     <div style={styles.container}>
       <h2 style={styles.header}>Author List</h2>
       <ul style={styles.list}>
@@ -65,6 +68,7 @@ function AuthorListComponent({ onLogout }) {
           Log Out
         </button>
       </div>
+    </div>
     </div>
   );
 }
