@@ -215,8 +215,8 @@ const submitToDatabase = async () => {
     // Construct the submission payload with flat values
     const submissionData = {
       author,
-      text: feedback, // Pass the raw feedback text
-      feedback: JSON.stringify(parsedFeedback), // Optional: Stringify for better debugging
+      text: "", // Pass the raw feedback text
+      feedback: "", // Optional: Stringify for better debugging
       studentID,
       overall: parsedFeedback.overall || "", // Fallback to empty strings if values are undefined
       lead: parsedFeedback.lead || "",
