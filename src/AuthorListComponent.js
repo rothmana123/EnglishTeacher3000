@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 function AuthorListComponent({ onLogout }) {
   const [authors, setAuthors] = useState([]);
-  const navigate = useNavigate(); // Hook for navigation
+  const [sortOrder, setSortOrder] = useState("asc");
+  const navigate = useNavigate();
 
   // Fetch authors
   useEffect(() => {
@@ -15,7 +16,7 @@ function AuthorListComponent({ onLogout }) {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  // Delete an author by ID
+  // Delete an author
   const handleDelete = (authorName) => {
     if (window.confirm("Are you sure you want to delete this author?")) {
       fetch("https://p5bev3.uc.r.appspot.com/deleteByAuthor", {
@@ -39,36 +40,72 @@ function AuthorListComponent({ onLogout }) {
     }
   };
 
+  // Sort authors
+  const sortByOverallAssessmentScore = () => {
+    const sortedAuthors = [...authors].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.overallAssessmentScore - b.overallAssessmentScore;
+      } else {
+        return b.overallAssessmentScore - a.overallAssessmentScore;
+      }
+    });
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    setAuthors(sortedAuthors);
+  };
+
   return (
     <div>
-    {/* Header at the top */}
-    <h1 style={{ textAlign: 'center', marginTop: '20px' }}>English Teacher 3000</h1>
-    <div style={styles.container}>
-      <h2 style={styles.header}>Author List</h2>
-      <ul style={styles.list}>
-        {authors.map((essay) => (
-          <li key={essay.id} style={styles.listItem}>
-            <Link to={`/author/${essay.id}`} style={styles.link}>
-              {essay.author}
-            </Link>
-            <button
-              onClick={() => handleDelete(essay.author)}
-              style={styles.deleteButton}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-      <div style={styles.buttonGroup}>
-        <button onClick={() => navigate("/feedback")} style={styles.button}>
-          Create Feedback
-        </button>
-        <button onClick={onLogout} style={styles.button}>
-          Log Out
-        </button>
+      <h1 style={{ textAlign: "center", marginTop: "20px" }}>
+        English Teacher 3000
+      </h1>
+      <div style={styles.container}>
+        <h2 style={styles.header}>Author List</h2>
+        <table style={styles.table}>
+        <thead>
+  <tr>
+    <th style={styles.th}>Author</th>
+    <th style={styles.th}>Overall Assessment Score</th>
+    <th style={styles.th}>Actions</th> {/* Moved this column */}
+    <th style={styles.th}>
+      <button
+        onClick={sortByOverallAssessmentScore}
+        style={styles.sortButton}
+      >
+        Sort by Score ({sortOrder === "asc" ? "⬆" : "⬇"})
+      </button>
+    </th>
+  </tr>
+</thead>
+          <tbody>
+            {authors.map((essay) => (
+              <tr key={essay.id}>
+                <td style={styles.td}>
+                  <Link to={`/author/${essay.id}`} style={styles.link}>
+                    {essay.author}
+                  </Link>
+                </td>
+                <td style={styles.td}>{essay.overallAssessmentScore || "N/A"}</td>
+                <td style={styles.td}>
+                  <button
+                    onClick={() => handleDelete(essay.author)}
+                    style={styles.deleteButton}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={styles.buttonGroup}>
+          <button onClick={() => navigate("/feedback")} style={styles.button}>
+            Create Feedback
+          </button>
+          <button onClick={onLogout} style={styles.button}>
+            Log Out
+          </button>
+        </div>
       </div>
-    </div>
     </div>
   );
 }
@@ -76,7 +113,7 @@ function AuthorListComponent({ onLogout }) {
 const styles = {
   container: {
     padding: "20px",
-    maxWidth: "600px",
+    maxWidth: "800px",
     margin: "auto",
     fontFamily: "Arial, sans-serif",
     border: "1px solid #ddd",
@@ -88,16 +125,21 @@ const styles = {
     color: "#333",
     marginBottom: "20px",
   },
-  list: {
-    listStyleType: "none",
-    padding: 0,
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginBottom: "20px",
   },
-  listItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 0",
-    borderBottom: "1px solid #ccc",
+  th: {
+    textAlign: "center",
+    backgroundColor: "#f8f9fa",
+    padding: "10px",
+    border: "1px solid #ddd",
+  },
+  td: {
+    textAlign: "center",
+    padding: "10px",
+    border: "1px solid #ddd",
   },
   link: {
     textDecoration: "none",
@@ -109,6 +151,15 @@ const styles = {
     fontSize: "14px",
     color: "#fff",
     backgroundColor: "#dc3545",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+  },
+  sortButton: {
+    fontSize: "14px",
+    padding: "5px 10px",
+    backgroundColor: "#28a745",
+    color: "#fff",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",

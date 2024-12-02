@@ -158,7 +158,7 @@ const parseFeedback = (response) => {
 
       if (section.startsWith("Overall")) {
         feedbackParts.overall = feedbackMatch ? feedbackMatch[1].trim() : "";
-        feedbackParts.leadScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
+        feedbackParts.overallAssessmentScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
       } else if (section.startsWith("Lead")) {
         feedbackParts.lead = feedbackMatch ? feedbackMatch[1].trim() : "";
         feedbackParts.leadScore = scoreMatch ? parseInt(scoreMatch[1], 10) : 0;
