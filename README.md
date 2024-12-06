@@ -7,7 +7,7 @@
 - **Backend Repository**: [P5BackEnd](https://github.com/rothmana123/P5BackEnd)
 - **Test the Deployed App**: [tinyurl.com/EnglishTeacher3000](https://tinyurl.com/EnglishTeacher3000)
 - **App in Action Video**: https://youtu.be/NVzkSQIrM8g
-
+- **User Testing Video**: https://www.youtube.com/watch?v=fSICO8qQGwg
 
 ### Problem Being Solved
 Teachers spend extensive time grading essays, often leading to inconsistencies and burnout. **English Teacher 3000** solves this problem by:
