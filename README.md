@@ -3,8 +3,9 @@
 ## Overview of the Project
 **English Teacher 3000** is a cutting-edge tool designed to assist English teachers by automating the grading process for student essays. The application allows teachers to select a grade level and specific academic standards, then instantly evaluates essays and provides detailed, actionable feedback. This streamlines grading, saves time, and ensures consistent and objective assessment.
 
-**BackEnd Repo** [here]((https://github.com/rothmana123/P5BackEnd))
-**Test the Deployed App here: tinyurl.com/EnglishTeacher3000
+## Related Repositories and Deployed App
+- **Backend Repository**: [P5BackEnd](https://github.com/rothmana123/P5BackEnd)
+- **Test the Deployed App**: [tinyurl.com/EnglishTeacher3000](https://tinyurl.com/EnglishTeacher3000)
 
 ### Problem Being Solved
 Teachers spend extensive time grading essays, often leading to inconsistencies and burnout. **English Teacher 3000** solves this problem by:
@@ -70,3 +71,35 @@ This process ensures that essay grading is consistent and aligned with the teach
    ```bash
    git clone https://github.com/yourusername/english-teacher-3000.git
    cd english-teacher-3000
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+
+3. **Set Up Environment Variables**:
+   - Create a `.env` file in the root directory.
+   - Add the required keys for Firebase and Google Cloud, such as:
+     ```plaintext
+     REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+     REACT_APP_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+     REACT_APP_FIREBASE_PROJECT_ID=your_firebase_project_id
+     REACT_APP_GCLOUD_PROJECT_ID=your_gcloud_project_id
+     ```
+
+4. **Start the Development Server**:
+   ```bash
+   npm start
+
+5. **Run Backend**:
+   - Clone and set up the Backend Repository following its instructions.
+   - Ensure the backend is running before testing the frontend.
+
+6. **Build for Production**:
+   ```bash
+   npm run build
+
+7. **Deploy**:
+   - Deploy the production build to your preferred hosting service, such as:
+     - **Firebase**
+     - **Netlify**
+     - **Vercel**
